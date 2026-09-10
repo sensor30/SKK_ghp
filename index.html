@@ -3,748 +3,844 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>榊 矩之 — Investigator Profile</title>
+  <title>榊 矩之 — Investigator File</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Sans+JP:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Noto Sans KR', 'Noto Sans JP', sans-serif;
-      background: #ffffff;
+      background: #e8e4de;
       color: #1a1a1a;
       line-height: 1.8;
       overflow: hidden;
     }
 
     /* ============================
-       ① CLASSIFIED COVER
+       COVER
     ============================ */
+    .cv {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent, transparent 28px,
+          rgba(0,0,0,0.018) 28px, rgba(0,0,0,0.018) 29px
+        ),
+        linear-gradient(180deg, #f0ece4 0%, #e6e1d8 100%);
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      z-index: 1000; cursor: pointer;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    .cv.out {
+      opacity: 0; visibility: hidden; pointer-events: none;
+    }
+    .cv-inner { text-align: center; position: relative; }
 
-    .cover {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #f5f3ef;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      cursor: pointer;
-      transition: opacity 0.8s ease, visibility 0.8s ease;
+    .cv-dept {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(9px, 2vw, 11px);
+      letter-spacing: 4px; color: #888;
+      margin-bottom: 6px;
+    }
+    .cv-title {
+      font-size: clamp(14px, 3.5vw, 18px);
+      font-weight: 700;
+      letter-spacing: 8px; color: #1a1a1a;
+      margin-bottom: 48px;
+    }
+    .cv-sub {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(10px, 2vw, 12px);
+      color: #aaa; letter-spacing: 2px;
+      margin-bottom: 48px;
     }
 
-    .cover.dismissed {
+    /* STAMP */
+    .st-zone {
+      width: 200px; height: 200px;
+      margin: 0 auto 36px;
+      position: relative;
+    }
+    .st {
+      width: 100%; height: 100%;
+      border: 4px solid #b82020;
+      border-radius: 50%;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      transform: scale(4) rotate(-25deg);
       opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
+      position: relative;
+    }
+    .st.slam {
+      animation: stampSlam 0.35s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+    }
+    .st-top {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; letter-spacing: 3px;
+      color: #b82020; font-weight: 700;
+    }
+    .st-main {
+      font-size: 32px; letter-spacing: 8px;
+      color: #b82020; font-weight: 900;
+      margin: 2px 0;
+    }
+    .st-bot {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px; letter-spacing: 2px;
+      color: #b82020; font-weight: 600;
     }
 
-    .cover-inner {
-      text-align: center;
+    @keyframes stampSlam {
+      0% { transform: scale(4) rotate(-25deg); opacity: 0; }
+      40% { transform: scale(0.95) rotate(-12deg); opacity: 1; }
+      60% { transform: scale(1.04) rotate(-11deg); opacity: 0.95; }
+      80% { transform: scale(0.99) rotate(-12.5deg); opacity: 0.88; }
+      100% { transform: scale(1) rotate(-12deg); opacity: 0.85; }
+    }
+    @keyframes screenShake {
+      0%, 100% { transform: translate(0, 0); }
+      10% { transform: translate(-4px, 2px); }
+      20% { transform: translate(4px, -2px); }
+      30% { transform: translate(-3px, -1px); }
+      40% { transform: translate(3px, 1px); }
+      50% { transform: translate(-2px, 1px); }
+      60% { transform: translate(2px, -1px); }
+      70% { transform: translate(-1px, 0px); }
+      80% { transform: translate(1px, 0px); }
+      90% { transform: translate(0px, 0px); }
+    }
+    .cv.shaking {
+      animation: screenShake 0.4s ease-out;
+    }
+
+    .cv-hint {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px; color: #bbb;
+      letter-spacing: 1px;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+    .cv-hint.show { opacity: 1; }
+
+    /* ============================
+       PAGE
+    ============================ */
+    .pg {
+      padding: clamp(20px, 5vw, 40px) clamp(12px, 3vw, 20px);
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s;
+      overflow-y: auto; height: 100vh;
+    }
+    .pg.vis { opacity: 1; transform: translateY(0); }
+
+    .wr {
+      max-width: 660px; margin: 0 auto;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent, transparent 28px,
+          rgba(0,0,0,0.015) 28px, rgba(0,0,0,0.015) 29px
+        ),
+        linear-gradient(180deg, #faf8f4 0%, #f5f2ec 100%);
+      border: 1px solid #c8c2b8;
+      box-shadow:
+        2px 2px 0 #d5d0c8,
+        4px 4px 0 #e0dbd3,
+        0 1px 8px rgba(0,0,0,0.06);
       position: relative;
     }
 
-    .cover-label {
-      font-size: 11px;
-      letter-spacing: 4px;
-      color: #999999;
-      margin-bottom: 12px;
-    }
-
-    .cover-title {
-      font-size: 18px;
-      font-weight: 500;
-      letter-spacing: 8px;
-      color: #1a1a1a;
-      margin-bottom: 40px;
-    }
-
-    .stamp {
-      width: 180px;
-      height: 180px;
-      border: 4px solid #c0392b;
+    /* hole punches */
+    .wr::before, .wr::after {
+      content: '';
+      position: absolute;
+      left: clamp(12px, 3vw, 20px);
+      width: 14px; height: 14px;
       border-radius: 50%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      margin: 0 auto 32px;
-      transform: rotate(-12deg);
-      transition: transform 0.6s ease, opacity 0.6s ease;
-      opacity: 0.85;
+      background: #e8e4de;
+      border: 1px solid #c8c2b8;
+      z-index: 2;
     }
+    .wr::before { top: 40px; }
+    .wr::after { bottom: 40px; }
 
-    .stamp-text-top {
-      font-size: 10px;
-      letter-spacing: 3px;
-      color: #c0392b;
-      font-weight: 700;
-    }
-
-    .stamp-text-main {
-      font-size: 28px;
-      letter-spacing: 6px;
-      color: #c0392b;
-      font-weight: 700;
-      margin: 4px 0;
-    }
-
-    .stamp-text-bottom {
-      font-size: 9px;
-      letter-spacing: 2px;
-      color: #c0392b;
-      font-weight: 500;
-    }
-
-    .cover.dismissed .stamp {
-      transform: rotate(20deg) scale(0.8);
-      opacity: 0;
-    }
-
-    .cover-hint {
-      font-size: 11px;
-      color: #bbbbbb;
-      letter-spacing: 1px;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 0.4; }
-      50% { opacity: 1; }
-    }
-
-    /* ============================
-       MAIN PROFILE
-    ============================ */
-
-    .profile-page {
-      padding: 40px 20px;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.8s ease 0.4s, transform 0.8s ease 0.4s;
-      overflow-y: auto;
-      height: 100vh;
-    }
-
-    .profile-page.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .profile-wrap {
-      max-width: 640px;
-      margin: 0 auto;
-      border: 2px solid #1a1a1a;
-    }
-
-    .profile-header {
+    /* top bar */
+    .topbar {
       background: #1a1a1a;
-      color: #ffffff;
-      padding: 20px 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
+      padding: clamp(12px, 3vw, 16px) clamp(20px, 5vw, 28px);
+      padding-left: clamp(44px, 8vw, 52px);
+      display: flex; justify-content: space-between;
+      align-items: flex-start;
     }
-
-    .profile-header-left {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+    .topbar-l { display: flex; flex-direction: column; gap: 1px; }
+    .topbar-dept {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(8px, 1.8vw, 10px);
+      letter-spacing: 3px; color: #666; text-transform: uppercase;
     }
-
-    .label-top {
-      font-size: 11px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      opacity: 0.6;
-    }
-
-    .name-jp {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: 6px;
-    }
-
-    .name-read {
-      font-size: 12px;
-      letter-spacing: 2px;
-      opacity: 0.7;
+    .topbar-doctitle {
+      font-size: clamp(12px, 2.8vw, 15px);
+      font-weight: 700; letter-spacing: 4px; color: #fff;
       margin-top: 2px;
     }
-
-    .file-no {
-      font-size: 11px;
-      letter-spacing: 1px;
-      opacity: 0.5;
-      text-align: right;
-      white-space: nowrap;
+    .topbar-r {
+      text-align: right; flex-shrink: 0;
+    }
+    .topbar-fileno {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(9px, 1.8vw, 10px);
+      color: #888; letter-spacing: 1px;
     }
 
-    .profile-body {
+    /* name block */
+    .nm {
+      padding: clamp(20px, 4vw, 28px) clamp(20px, 5vw, 28px);
+      padding-left: clamp(44px, 8vw, 52px);
+      border-bottom: 2px solid #1a1a1a;
+      position: relative;
+    }
+    .nm-kanji {
+      font-size: clamp(28px, 6vw, 36px);
+      font-weight: 900; letter-spacing: 8px;
+      color: #1a1a1a; line-height: 1.2;
+    }
+    .nm-read {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(10px, 2vw, 12px);
+      letter-spacing: 2px; color: #888;
+      margin-top: 4px;
+    }
+    .nm-ho {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(9px, 1.8vw, 10px);
+      letter-spacing: 1px; color: #b82020;
+      margin-top: 8px; font-weight: 600;
+    }
+
+    /* red stamp on name block */
+    .nm-stamp {
+      position: absolute;
+      right: clamp(16px, 4vw, 28px);
+      top: 50%; transform: translateY(-50%) rotate(-8deg);
+      border: 2px solid #b82020;
+      padding: 4px 10px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px; letter-spacing: 2px;
+      color: #b82020; font-weight: 700;
+      opacity: 0.5;
+    }
+
+    /* body */
+    .bd {
       padding: 0;
     }
 
     /* ============================
-       ② ACCORDION SECTIONS
+       SECTIONS — ACCORDION
     ============================ */
-
-    .section {
-      border-bottom: 1px solid #e8e8e8;
+    .sc {
+      border-bottom: 1px solid #ddd8d0;
     }
+    .sc:last-child { border-bottom: none; }
 
-    .section:last-child {
-      border-bottom: none;
-    }
-
-    .section-header {
-      padding: 16px 28px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .sc-hd {
+      padding: clamp(12px, 2.5vw, 16px) clamp(20px, 5vw, 28px);
+      padding-left: clamp(44px, 8vw, 52px);
+      cursor: pointer; display: flex;
+      justify-content: space-between; align-items: center;
       user-select: none;
-      transition: background 0.2s ease;
+      transition: background 0.15s ease;
     }
+    .sc-hd:hover { background: rgba(0,0,0,0.015); }
 
-    .section-header:hover {
-      background: #fafafa;
+    .sc-hd-l { display: flex; align-items: baseline; gap: 10px; }
+
+    .sc-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(9px, 1.8vw, 10px);
+      color: #aaa; font-weight: 600;
+      flex-shrink: 0;
     }
-
-    .section-title {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #1a1a1a;
+    .sc-ttl {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(10px, 2vw, 11px);
+      font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: #1a1a1a;
     }
-
-    .section-arrow {
-      font-size: 10px;
-      color: #aaaaaa;
+    .sc-arr {
+      font-size: 9px; color: #aaa;
       transition: transform 0.3s ease;
-      line-height: 1;
+      flex-shrink: 0;
     }
+    .sc.on .sc-arr { transform: rotate(180deg); }
 
-    .section.open .section-arrow {
-      transform: rotate(180deg);
-    }
-
-    .section-content {
-      max-height: 0;
-      overflow: hidden;
+    .sc-ct {
+      max-height: 0; overflow: hidden;
       transition: max-height 0.5s ease, padding 0.3s ease;
-      padding: 0 28px;
+      padding: 0 clamp(20px, 5vw, 28px);
+      padding-left: clamp(44px, 8vw, 52px);
     }
-
-    .section.open .section-content {
-      max-height: 1200px;
-      padding: 0 28px 20px;
+    .sc.on .sc-ct {
+      max-height: 2400px;
+      padding-bottom: clamp(16px, 3vw, 20px);
     }
 
     /* ============================
-       BASIC INFO GRID
+       DATA STYLES
     ============================ */
 
-    .info-grid {
+    /* info row */
+    .ir {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 6px 20px;
+      gap: 4px 16px;
     }
-
-    .info-item {
-      display: flex;
-      gap: 8px;
-      font-size: 13px;
+    .ii {
+      display: flex; gap: 8px;
+      font-size: clamp(12px, 2.5vw, 13px);
+      padding: 3px 0;
+      border-bottom: 1px dotted #e0dbd3;
     }
-
-    .info-label {
-      color: #888888;
-      flex-shrink: 0;
-      min-width: 48px;
+    .ii:last-child, .ii:nth-last-child(2):nth-child(odd) {
+      border-bottom: 1px dotted #e0dbd3;
     }
-
-    .info-value {
-      color: #1a1a1a;
-      font-weight: 500;
+    .il {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(9px, 1.8vw, 10px);
+      color: #999; flex-shrink: 0;
+      min-width: 50px; letter-spacing: 0.5px;
+      padding-top: 2px; font-weight: 500;
+      text-transform: uppercase;
     }
+    .iv { color: #1a1a1a; font-weight: 500; }
 
-    /* ============================
-       ③ STAT BARS
-    ============================ */
-
-    .stat-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    /* stat bars */
+    .stl { display: flex; flex-direction: column; gap: 8px; }
+    .sr {
+      display: flex; align-items: center; gap: 10px;
     }
-
-    .stat-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    .sn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(9px, 1.8vw, 10px);
+      letter-spacing: 2px; color: #999;
+      width: 36px; text-align: right;
+      flex-shrink: 0; font-weight: 600;
     }
-
-    .stat-name {
-      font-size: 10px;
-      letter-spacing: 2px;
-      color: #888888;
-      width: 32px;
-      text-align: right;
-      flex-shrink: 0;
-      font-weight: 500;
+    .sb {
+      flex: 1; height: 16px;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          #eee8e0, #eee8e0 9px,
+          #f5f2ec 9px, #f5f2ec 10px
+        );
+      position: relative; overflow: hidden;
     }
-
-    .stat-bar-wrap {
-      flex: 1;
-      height: 20px;
-      background: #f0f0f0;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .stat-bar-fill {
+    .sf {
       height: 100%;
       background: #1a1a1a;
       width: 0%;
-      transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .sf.lo { background: #999; }
+    .sf.hi { background: #2a2a2a; }
+    .sv {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(11px, 2.2vw, 13px);
+      font-weight: 700; color: #1a1a1a;
+      width: 28px; flex-shrink: 0; text-align: left;
     }
 
-    .stat-bar-fill.low {
-      background: #888888;
+    /* text block */
+    .tb {
+      font-size: clamp(12px, 2.5vw, 13px);
+      line-height: 2; color: #333;
+      word-break: keep-all;
     }
-
-    .stat-num {
-      font-size: 13px;
-      font-weight: 700;
-      color: #1a1a1a;
-      width: 28px;
-      text-align: left;
-      flex-shrink: 0;
-    }
-
-    /* ============================
-       TEXT & RELATIONS
-    ============================ */
-
-    .text-block {
-      font-size: 13px;
-      line-height: 2;
-      color: #333333;
-    }
-
-    .text-block p {
-      margin-bottom: 8px;
-    }
-
-    .text-block p:last-child {
-      margin-bottom: 0;
-    }
-
-    .rel-item {
+    .tb p {
       margin-bottom: 10px;
-      font-size: 13px;
-      line-height: 1.9;
+      text-indent: 1em;
+    }
+    .tb p:first-child { text-indent: 0; }
+    .tb p:last-child { margin-bottom: 0; }
+
+    /* list items */
+    .ls {
+      list-style: none;
+      font-size: clamp(12px, 2.5vw, 13px);
+      line-height: 2; color: #333;
+      word-break: keep-all;
+    }
+    .ls li {
+      padding: 2px 0;
+      border-bottom: 1px dotted #e8e4de;
+    }
+    .ls li:last-child { border-bottom: none; }
+    .ls .lt {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(9px, 1.8vw, 10px);
+      color: #999; letter-spacing: 0.5px;
+      margin-right: 8px; font-weight: 500;
+      text-transform: uppercase;
     }
 
-    .rel-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .rel-name-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      user-select: none;
+    /* relation items */
+    .ri { margin-bottom: 8px; }
+    .ri:last-child { margin-bottom: 0; }
+    .ri-bar {
+      display: flex; align-items: center; gap: 8px;
+      cursor: pointer; user-select: none;
       padding: 6px 0;
     }
-
-    .rel-dash {
-      color: #aaaaaa;
-      flex-shrink: 0;
+    .ri-dash {
+      font-family: 'IBM Plex Mono', monospace;
+      color: #ccc; flex-shrink: 0;
     }
-
-    .rel-name {
-      font-weight: 700;
-      color: #1a1a1a;
+    .ri-nm { font-weight: 700; color: #1a1a1a; font-size: clamp(12px, 2.5vw, 13px); }
+    .ri-role {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(9px, 1.8vw, 10px);
+      color: #aaa; flex-shrink: 0;
     }
-
-    .rel-role {
-      font-size: 11px;
-      color: #aaaaaa;
-      flex-shrink: 0;
-    }
-
-    .rel-expand-icon {
-      font-size: 9px;
-      color: #cccccc;
-      margin-left: auto;
+    .ri-ic {
+      font-size: 8px; color: #ccc;
+      margin-left: auto; flex-shrink: 0;
       transition: transform 0.3s ease;
-      flex-shrink: 0;
     }
-
-    .rel-item.open .rel-expand-icon {
-      transform: rotate(90deg);
-    }
-
-    .rel-desc {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.4s ease, margin 0.3s ease;
-      font-size: 13px;
-      color: #555555;
-      line-height: 1.9;
+    .ri.on .ri-ic { transform: rotate(90deg); }
+    .ri-desc {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.4s ease;
+      font-size: clamp(12px, 2.5vw, 13px);
+      color: #555; line-height: 1.9;
       padding-left: 20px;
-      margin-top: 0;
+      word-break: keep-all;
+    }
+    .ri.on .ri-desc { max-height: 500px; margin-top: 2px; }
+    .ri-hon {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(9px, 1.8vw, 10px);
+      color: #b82020;
+      display: block;
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
     }
 
-    .rel-item.open .rel-desc {
-      max-height: 300px;
-      margin-top: 4px;
+    /* trivia */
+    .tv {
+      list-style: none;
+      font-size: clamp(12px, 2.5vw, 13px);
+      color: #555; line-height: 2;
+      word-break: keep-all;
+    }
+    .tv li {
+      padding: 2px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+    .tv li::before {
+      content: '·';
+      position: absolute; left: 0;
+      color: #ccc; font-weight: 700;
     }
 
-    /* ============================
-       FOOTER
-    ============================ */
+    /* confidential */
+    .cf-warn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(9px, 1.8vw, 10px);
+      color: #b82020; letter-spacing: 2px;
+      margin-bottom: 10px; font-weight: 600;
+    }
+    .cf-bar {
+      width: 100%; height: 2px;
+      background: repeating-linear-gradient(
+        90deg, #b82020, #b82020 6px, transparent 6px, transparent 10px
+      );
+      margin-bottom: 12px;
+    }
 
-    .footer-note {
-      font-size: 10px;
-      color: #bbbbbb;
-      letter-spacing: 1px;
-      text-align: right;
-      padding: 16px 28px;
+    /* footer */
+    .ft {
+      padding: clamp(12px, 2.5vw, 16px) clamp(20px, 5vw, 28px);
+      padding-left: clamp(44px, 8vw, 52px);
+      border-top: 2px solid #1a1a1a;
+      display: flex; justify-content: space-between;
+      align-items: center;
+    }
+    .ft-l {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(8px, 1.6vw, 9px);
+      color: #bbb; letter-spacing: 1px;
+    }
+    .ft-r {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(8px, 1.6vw, 9px);
+      color: #bbb; letter-spacing: 1px;
     }
 
     /* ============================
        RESPONSIVE
     ============================ */
-
     @media (max-width: 480px) {
-      .info-grid {
-        grid-template-columns: 1fr;
-      }
-      .profile-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-      }
-      .name-jp {
-        font-size: 22px;
-        letter-spacing: 4px;
-      }
-      .section-header {
-        padding: 14px 20px;
-      }
-      .section.open .section-content {
-        padding: 0 20px 16px;
-      }
-      .profile-header {
-        padding: 16px 20px;
-      }
-      .footer-note {
-        padding: 12px 20px;
-      }
+      .ir { grid-template-columns: 1fr; }
+      .nm-stamp { display: none; }
+      .topbar { flex-direction: column; gap: 6px; }
+      .topbar-r { text-align: left; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .wr *, .cv * { animation: none !important; transition: none !important; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ① CLASSIFIED COVER -->
-  <div class="cover" id="cover" onclick="openFile()">
-    <div class="cover-inner">
-      <div class="cover-label">경시청 형사부 수사 제1과</div>
-      <div class="cover-title">탐사자 인사파일</div>
-      <div class="stamp">
-        <span class="stamp-text-top">RESTRICTED</span>
-        <span class="stamp-text-main">機密</span>
-        <span class="stamp-text-bottom">CLASSIFIED</span>
+  <!-- ======== COVER ======== -->
+  <div class="cv" id="cover" onclick="openFile()">
+    <div class="cv-inner">
+      <div class="cv-dept">TOKYO METROPOLITAN POLICE DEPT.</div>
+      <div class="cv-title">捜査一課 人事資料</div>
+      <div class="cv-sub">Criminal Investigation Div.1 — Personnel File</div>
+      <div class="st-zone">
+        <div class="st" id="stamp">
+          <span class="st-top">RESTRICTED</span>
+          <span class="st-main">機 密</span>
+          <span class="st-bot">CLASSIFIED</span>
+        </div>
       </div>
-      <div class="cover-hint">클릭하여 열람</div>
+      <div class="cv-hint" id="hint">CLICK TO ACCESS</div>
     </div>
   </div>
 
-  <!-- MAIN PROFILE -->
-  <div class="profile-page" id="profilePage">
-    <div class="profile-wrap">
+  <!-- ======== PROFILE ======== -->
+  <div class="pg" id="page">
+    <div class="wr">
 
-      <div class="profile-header">
-        <div class="profile-header-left">
-          <span class="label-top">Investigator File</span>
-          <span class="name-jp">榊 矩之</span>
-          <span class="name-read">사카키 노리유키 / Sakaki Noriyuki</span>
+      <!-- top bar -->
+      <div class="topbar">
+        <div class="topbar-l">
+          <span class="topbar-dept">Metropolitan Police — Criminal Investigation Div.1</span>
+          <span class="topbar-doctitle">탐 사 자 &ensp; 인 사 파 일</span>
         </div>
-        <span class="file-no">HO2<br>상처 많은 협력자</span>
+        <div class="topbar-r">
+          <div class="topbar-fileno">FILE NO. HO2-2020-1201</div>
+          <div class="topbar-fileno">DATE: 2020.12.01</div>
+        </div>
       </div>
 
-      <div class="profile-body">
+      <!-- name -->
+      <div class="nm">
+        <div class="nm-kanji">榊 矩之</div>
+        <div class="nm-read">Sakaki Noriyuki / サカキ ノリユキ</div>
+        <div class="nm-ho">HO2 — 상처 많은 협력자</div>
+        <div class="nm-stamp">ACTIVE</div>
+      </div>
 
-        <!-- BASIC INFORMATION — 기본 열림 -->
-        <div class="section open" data-section>
-          <div class="section-header" onclick="toggleSection(this)">
-            <span class="section-title">Basic Information</span>
-            <span class="section-arrow">▼</span>
+      <div class="bd">
+
+        <!-- 01 BASIC -->
+        <div class="sc on" data-sc>
+          <div class="sc-hd" onclick="tog(this)">
+            <div class="sc-hd-l">
+              <span class="sc-num">01</span>
+              <span class="sc-ttl">Basic Information</span>
+            </div>
+            <span class="sc-arr">▼</span>
           </div>
-          <div class="section-content">
-            <div class="info-grid">
-              <div class="info-item">
-                <span class="info-label">나이</span>
-                <span class="info-value">26세</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">성별</span>
-                <span class="info-value">남성</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">소속</span>
-                <span class="info-value">경시청 형사부 수사 제1과</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">전속</span>
-                <span class="info-value">지역과</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">계급</span>
-                <span class="info-value">순경</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">배치일</span>
-                <span class="info-value">2020.12.01</span>
-              </div>
+          <div class="sc-ct">
+            <div class="ir">
+              <div class="ii"><span class="il">이름</span><span class="iv">榊 矩之</span></div>
+              <div class="ii"><span class="il">나이</span><span class="iv">26세</span></div>
+              <div class="ii"><span class="il">성별</span><span class="iv">남성</span></div>
+              <div class="ii"><span class="il">신장</span><span class="iv">178cm</span></div>
+              <div class="ii"><span class="il">출신</span><span class="iv">東京都 府中市</span></div>
+              <div class="ii"><span class="il">현거주</span><span class="iv">都内 단독 거주</span></div>
+              <div class="ii"><span class="il">소속</span><span class="iv">경시청 형사부 수사 제1과</span></div>
+              <div class="ii"><span class="il">전속</span><span class="iv">지역과</span></div>
+              <div class="ii"><span class="il">배치일</span><span class="iv">2020.12.01</span></div>
+              <div class="ii"><span class="il">비고</span><span class="iv">경찰학교 입학 1년 재수</span></div>
             </div>
           </div>
         </div>
 
-        <!-- CHARACTERISTICS -->
-        <div class="section" data-section>
-          <div class="section-header" onclick="toggleSection(this)">
-            <span class="section-title">Characteristics</span>
-            <span class="section-arrow">▼</span>
+        <!-- 02 CHARACTERISTICS -->
+        <div class="sc" data-sc>
+          <div class="sc-hd" onclick="tog(this)">
+            <div class="sc-hd-l">
+              <span class="sc-num">02</span>
+              <span class="sc-ttl">Characteristics</span>
+            </div>
+            <span class="sc-arr">▼</span>
           </div>
-          <div class="section-content">
-            <div class="stat-list" id="statList">
-              <div class="stat-row">
-                <span class="stat-name">STR</span>
-                <div class="stat-bar-wrap"><div class="stat-bar-fill" data-target="60"></div></div>
-                <span class="stat-num">60</span>
-              </div>
-              <div class="stat-row">
-                <span class="stat-name">CON</span>
-                <div class="stat-bar-wrap"><div class="stat-bar-fill" data-target="60"></div></div>
-                <span class="stat-num">60</span>
-              </div>
-              <div class="stat-row">
-                <span class="stat-name">SIZ</span>
-                <div class="stat-bar-wrap"><div class="stat-bar-fill" data-target="65"></div></div>
-                <span class="stat-num">65</span>
-              </div>
-              <div class="stat-row">
-                <span class="stat-name">DEX</span>
-                <div class="stat-bar-wrap"><div class="stat-bar-fill" data-target="55"></div></div>
-                <span class="stat-num">55</span>
-              </div>
-              <div class="stat-row">
-                <span class="stat-name">APP</span>
-                <div class="stat-bar-wrap"><div class="stat-bar-fill" data-target="65"></div></div>
-                <span class="stat-num">65</span>
-              </div>
-              <div class="stat-row">
-                <span class="stat-name">EDU</span>
-                <div class="stat-bar-wrap"><div class="stat-bar-fill" data-target="60"></div></div>
-                <span class="stat-num">60</span>
-              </div>
-              <div class="stat-row">
-                <span class="stat-name">INT</span>
-                <div class="stat-bar-wrap"><div class="stat-bar-fill" data-target="70"></div></div>
-                <span class="stat-num">70</span>
-              </div>
-              <div class="stat-row">
-                <span class="stat-name">POW</span>
-                <div class="stat-bar-wrap"><div class="stat-bar-fill low" data-target="45"></div></div>
-                <span class="stat-num">45</span>
-              </div>
+          <div class="sc-ct">
+            <div class="stl" id="stl">
+              <div class="sr"><span class="sn">STR</span><div class="sb"><div class="sf" data-t="70"></div></div><span class="sv">70</span></div>
+              <div class="sr"><span class="sn">CON</span><div class="sb"><div class="sf" data-t="70"></div></div><span class="sv">70</span></div>
+              <div class="sr"><span class="sn">SIZ</span><div class="sb"><div class="sf" data-t="65"></div></div><span class="sv">65</span></div>
+              <div class="sr"><span class="sn">DEX</span><div class="sb"><div class="sf" data-t="65"></div></div><span class="sv">65</span></div>
+              <div class="sr"><span class="sn">APP</span><div class="sb"><div class="sf" data-t="65"></div></div><span class="sv">65</span></div>
+              <div class="sr"><span class="sn">EDU</span><div class="sb"><div class="sf" data-t="60"></div></div><span class="sv">60</span></div>
+              <div class="sr"><span class="sn">INT</span><div class="sb"><div class="sf hi" data-t="75"></div></div><span class="sv">75</span></div>
+              <div class="sr"><span class="sn">POW</span><div class="sb"><div class="sf lo" data-t="60"></div></div><span class="sv">60</span></div>
+              <div class="sr"><span class="sn">LUCK</span><div class="sb"><div class="sf" data-t="70"></div></div><span class="sv">70</span></div>
             </div>
           </div>
         </div>
 
-        <!-- PERSONALITY -->
-        <div class="section" data-section>
-          <div class="section-header" onclick="toggleSection(this)">
-            <span class="section-title">Personality</span>
-            <span class="section-arrow">▼</span>
+        <!-- 03 PERSONALITY -->
+        <div class="sc" data-sc>
+          <div class="sc-hd" onclick="tog(this)">
+            <div class="sc-hd-l">
+              <span class="sc-num">03</span>
+              <span class="sc-ttl">Personality</span>
+            </div>
+            <span class="sc-arr">▼</span>
           </div>
-          <div class="section-content">
-            <div class="text-block">
-              <p>경찰 종사자 가문의 막내. 절차와 원칙을 무엇보다 중시하는 원칙주의자이나, 그 이면에는 가문의 기대에 부응하지 못할까 하는 만성적인 불안이 자리하고 있다. 감정 표현에 서툴고, 다정함을 행동이 아닌 구조와 습관으로 전달하는 편.</p>
-              <p>한 번의 재수를 거쳐 경찰학교에 입학. 가족 누구도 그것을 실패라 부르지 않았지만, 본인에게는 여전히 증명해야 할 빚으로 남아 있다. 강박적인 확인 습관, 만성 우울, 자해 이력이 있으며, 사사라 토오리의 격주 진료를 받아왔다. 2020년 12월 1일 아침, 모든 증상이 거짓말처럼 소실되었다.</p>
+          <div class="sc-ct">
+            <div class="tb">
+              <p>경찰 종사자 가문의 막내로, 절차와 원칙을 무엇보다 중시한다. 예의 바르고 반듯하며, 보고서 한 장도 빈틈 없이 작성하는 성격. 동료들 사이에서는 "꼼꼼하고 믿음직하지만 좀 딱딱한 사람"으로 통한다. 감정을 드러내기보다 규칙과 구조 뒤에 자신을 숨기는 편이며, 다정함을 말이 아닌 행동과 습관으로 전달한다.</p>
+              <p>그 이면에는 가문의 기대에 부응하지 못할 것이라는 만성적 불안이 자리하고 있다. 한 번의 재수를 거쳐 경찰학교에 입학했으나, 가족 누구도 그것을 실패라 부르지 않았음에도 본인에게는 증명해야 할 빚으로 남아 있다. 칭찬에 어떻게 반응해야 할지 모르고, 실수는 오래도록 반추하며, 자신을 엄하게 몰아세우는 데에는 익숙하지만 쉬는 법은 모른다.</p>
+              <p>평소에는 완벽하게 제어된 인상을 주지만, 통제력이 한계에 달하는 순간에는 손이 미세하게 떨리거나 입이 굳어지는 등의 신체적 반응이 먼저 나타난다. 본인은 이러한 균열을 누구에게도 들키지 않았다고 생각하지만, 매우 가까운 사람들은 이미 눈치채고 있을 가능성이 높다.</p>
             </div>
           </div>
         </div>
 
-        <!-- BACKGROUND -->
-        <div class="section" data-section>
-          <div class="section-header" onclick="toggleSection(this)">
-            <span class="section-title">Background</span>
-            <span class="section-arrow">▼</span>
+        <!-- 04 BACKGROUND -->
+        <div class="sc" data-sc>
+          <div class="sc-hd" onclick="tog(this)">
+            <div class="sc-hd-l">
+              <span class="sc-num">04</span>
+              <span class="sc-ttl">Background</span>
+            </div>
+            <span class="sc-arr">▼</span>
           </div>
-          <div class="section-content">
-            <div class="text-block">
-              <p>할아버지부터 아버지, 삼촌, 형제에 이르기까지 경찰 종사자가 다수인 가문에서 막내로 태어났다. 아버지는 경시청 소속으로 오래 근무한 뒤 명예퇴직했으며, 가정 내에서는 과묵하고 엄격한 기준의 중심이었다. 칭찬은 조건부였고, 실수는 오래 기억되었으며, 약함은 불편함으로 처리되었다.</p>
-              <p>경찰학교 입학 시 1년의 재수를 경험. 졸업 후 지역과에 배치되어 약 1년간 근무하며, 선배 아이하라 아유미를 만났다. 이 시기에 관할 내 중화식당 코토리켄에 단골로 드나들며 점주 부녀와 친분을 쌓았다.</p>
-              <p>2020년 9월 2일, 모즈 사건으로 코토리켄 점주가 사망. 타 부서 소속이라 수사에 관여할 수 없었으며, 그 무력감은 이후 자해 악화의 직접적 계기가 되었다. 남겨진 딸 코토리 히나노에게 자신의 담당의인 사사라 토오리를 소개했다. 같은 해 12월, 수사 제1과로 이동하여 모즈 사건에 투입된다.</p>
+          <div class="sc-ct">
+            <div class="tb">
+              <p>도쿄도 후추시 출신. 할아버지부터 아버지, 삼촌, 형 또는 사촌형에 이르기까지 경찰 종사자가 다수인 가문에서 막내로 태어났다. 집안의 거실에는 할아버지의 사진이 걸려 있었고, 식탁에서의 대화는 자연스럽게 치안과 질서에 관한 것이었다. "경찰이 된다"는 것은 꿈이 아니라 당연히 밟아야 할 수순이었다.</p>
+              <p>아버지는 경시청에서 오래 근무한 뒤 명예퇴직했으며, 가정 내에서는 과묵하고 엄격한 기준의 중심이었다. 칭찬은 조건부였고, 실수는 기억되었으며, 약함은 불편함으로 처리되었다. 어머니는 경찰 배우자로서의 인내를 체화한 사람으로, 직접적인 압박은 하지 않되 "네 아버지가 네 나이 때는" 하는 식의 간접적 기대를 일상처럼 내비쳤다.</p>
+              <p>경찰학교 시험에서 1년 재수를 경험. 같은 해에 입학한 동기 중 한 살 어린 헤비하라 타츠미를 만났다. 고졸 직행으로 거침없이 돌파하는 헤비하라과 자신을 비교하며 조용한 열등감을 키웠으나, 동시에 서로 가장 가까운 라이벌이자 유일하게 허물없이 부딪힐 수 있는 상대가 되었다. 경찰학교 재학 중 유도를 중점적으로 수련하였으며, 교내 유도 대회에서 입상한 이력이 있다.</p>
+              <p>졸업 후 지역과에 배치되어 약 1년간 근무. 이 시기에 선배 아이하라 아유미을 만났고, 관할 인근의 중화식당 코토리켄에 단골로 드나들며 점주 부녀 — 아버지와 딸 코토리 히나노 — 와 친분을 쌓았다. 노리유키에게 코토리켄은 혼자 먹기 좋고, 간섭받지 않으며, 질서정연하게 돌아가는 공간이었다.</p>
+              <p>2020년 9월 2일, 연속 살인범 모즈 사건으로 코토리켄 점주가 사망. 타 부서 소속이라 수사에 관여할 수 없었다. 그 무력감은 이후 증상 악화의 직접적 계기가 되었으며, 남겨진 ヒナノ에게 자신의 담당의인 사사키 토오리를 소개했다. 같은 해 12월 1일, 수사 제1과로 이동하여 모즈 사건 수사에 투입된다.</p>
             </div>
           </div>
         </div>
 
-        <!-- RELATIONSHIPS -->
-        <div class="section" data-section>
-          <div class="section-header" onclick="toggleSection(this)">
-            <span class="section-title">Relationships</span>
-            <span class="section-arrow">▼</span>
+        <!-- 05 SKILLS & TRAINING -->
+        <div class="sc" data-sc>
+          <div class="sc-hd" onclick="tog(this)">
+            <div class="sc-hd-l">
+              <span class="sc-num">05</span>
+              <span class="sc-ttl">Skills & Training</span>
+            </div>
+            <span class="sc-arr">▼</span>
           </div>
-          <div class="section-content">
+          <div class="sc-ct">
+            <ul class="ls">
+              <li><span class="lt">근접전</span>유도 — 경찰학교 재학 시 수련, 교내 대회 입상 경력. 제압과 체포술 중심</li>
+              <li><span class="lt">사격</span>권총 사격 — 경찰 훈련 과정 이수. 사격에 쾌감을 느끼는 타입은 아니나 안정적</li>
+              <li><span class="lt">수사</span>관찰력, 듣기, 심리학 — 강박적 확인 습관이 수사 능력으로 전환된 측면이 있음</li>
+              <li><span class="lt">기타</span>응급처치, 운전</li>
+            </ul>
+          </div>
+        </div>
 
-            <div class="rel-item" onclick="toggleRel(this)">
-              <div class="rel-name-bar">
-                <span class="rel-dash">—</span>
-                <span class="rel-name">蛇原 辰巳</span>
-                <span class="rel-role">경찰학교 동기</span>
-                <span class="rel-expand-icon">▶</span>
+        <!-- 06 LIKES & DISLIKES -->
+        <div class="sc" data-sc>
+          <div class="sc-hd" onclick="tog(this)">
+            <div class="sc-hd-l">
+              <span class="sc-num">06</span>
+              <span class="sc-ttl">Likes & Dislikes</span>
+            </div>
+            <span class="sc-arr">▼</span>
+          </div>
+          <div class="sc-ct">
+            <ul class="ls">
+              <li><span class="lt">선호</span>정돈된 서류와 깨끗한 데스크. 이른 아침의 찬 공기. 규칙적인 일과. 코토리켄의 볶음밥 — 항상 같은 메뉴를 시킨다. 조용한 환경에서의 독서</li>
+              <li><span class="lt">기피</span>예측 불가능한 상황 변동. 시끄러운 술자리. 자신의 약점이 타인에게 노출되는 순간. 무책임한 태도. 갑작스러운 신체 접촉</li>
+              <li><span class="lt">식성</span>담백한 음식 선호. 매운 것을 잘 못 먹으며, 이를 들키는 것도 싫어함</li>
+              <li><span class="lt">주량</span>약한 편. 맥주 한두 잔이면 귀와 목이 붉어진다</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 07 RELATIONSHIPS -->
+        <div class="sc" data-sc>
+          <div class="sc-hd" onclick="tog(this)">
+            <div class="sc-hd-l">
+              <span class="sc-num">07</span>
+              <span class="sc-ttl">Relationships</span>
+            </div>
+            <span class="sc-arr">▼</span>
+          </div>
+          <div class="sc-ct">
+
+            <div class="ri" onclick="togR(this)">
+              <div class="ri-bar">
+                <span class="ri-dash">—</span>
+                <span class="ri-nm">蛇原 辰巳</span>
+                <span class="ri-role">경찰학교 동기</span>
+                <span class="ri-ic">▶</span>
               </div>
-              <div class="rel-desc">
-                한 살 어리지만 같은 해 입학한 동기이자 라이벌. 거침없는 성격과 자주 충돌하면서도, 제때 들어온 그에 대한 조용한 열등감과 자신이 그를 바로잡아야 한다는 책임감이 공존한다. 그가 "폭주하면 막아달라"고 말할 수 있는 유일한 상대.
+              <div class="ri-desc">
+                <span class="ri-hon">榊 → 蛇原 「헤비하라」 / 蛇原 → 榊 「사카키」</span>
+                한 살 어리지만 같은 해 입학한 동기이자, 가장 가까운 라이벌. 거침없고 직선적인 성격이 노리유키와 자주 충돌하지만, 동시에 제때 들어와 거침없이 치고 나가는 그에게 조용한 열등감을 품고 있다. 경찰학교 시절 유도에서 맞붙은 것이 라이벌 관계의 시작. 노리유키 본인은 "내가 이 녀석을 관리해야 한다"고 생각하고, 헤비하라는 "내가 폭주하면 이 녀석만이 나를 세운다"고 생각한다. 서로를 위해 무언가를 하고 있다고 생각하지만 그 방향이 전혀 다른, 비대칭적인 신뢰.
               </div>
             </div>
 
-            <div class="rel-item" onclick="toggleRel(this)">
-              <div class="rel-name-bar">
-                <span class="rel-dash">—</span>
-                <span class="rel-name">古鳥 ヒナノ</span>
-                <span class="rel-role">코토리켄 대리점장</span>
-                <span class="rel-expand-icon">▶</span>
+            <div class="ri" onclick="togR(this)">
+              <div class="ri-bar">
+                <span class="ri-dash">—</span>
+                <span class="ri-nm">古鳥 ヒナノ</span>
+                <span class="ri-role">코토리켄 대리점장</span>
+                <span class="ri-ic">▶</span>
               </div>
-              <div class="rel-desc">
-                지역과 시절부터 코토리켄의 단골로서 맺어진 친분. 아버지의 사망 이후 힘들어하는 그녀에게 사사라를 소개했다. 경찰이면서 아는 사람을 지키지 못했다는 무력감, 당시 자신이 제정신이었다면 무언가 알아챌 수 있었을지도 모른다는 강박적 후회가 얽혀 있다.
-              </div>
-            </div>
-
-            <div class="rel-item" onclick="toggleRel(this)">
-              <div class="rel-name-bar">
-                <span class="rel-dash">—</span>
-                <span class="rel-name">佐々羅 透李</span>
-                <span class="rel-role">담당 상담의</span>
-                <span class="rel-expand-icon">▶</span>
-              </div>
-              <div class="rel-desc">
-                격주 진료를 담당하는 정신과 상담의. 자해 흉터를 포함해 가장 깊은 바닥을 유일하게 본 사람. 신뢰하지만 그 신뢰 자체가 수치스럽다. 사소한 고민거리라도 상담해주는 몇 안 되는 이해자.
+              <div class="ri-desc">
+                <span class="ri-hon">榊 → ヒナノ 「코토리 씨」 / ヒナノ → 榊 「사카키 씨」</span>
+                지역과 시절 관할 인근에 위치한 코토리켄의 단골이 되면서 맺어진 친분. 처음에는 점주인 아버지와의 과묵한 인사 정도였으나, 꾸준히 같은 자리에서 같은 메뉴를 시키는 노리유키를 히나노가 먼저 말을 걸며 거리를 좁혔다. 2020년 9월 모즈 사건으로 아버지가 사망한 후, 경찰이면서 아는 사람 하나 지키지 못했다는 무력감과, 당시 제정신이었다면 무언가 알아챌 수 있었을지도 모른다는 강박적 후회가 얽혀 있다. 실제로 무언가를 놓쳤는지는 알 수 없으나, 강박사고는 그 가능성을 끝없이 반추시키고, 그것이 사실인지 아닌지는 이미 중요하지 않다. 담당의 사사키를 히나노에게 소개한 행위에는 순수한 걱정과 속죄의 심리가 동시에 깔려 있다.
               </div>
             </div>
 
-            <div class="rel-item" onclick="toggleRel(this)">
-              <div class="rel-name-bar">
-                <span class="rel-dash">—</span>
-                <span class="rel-name">愛原 歩</span>
-                <span class="rel-role">지역과 시절 선배</span>
-                <span class="rel-expand-icon">▶</span>
+            <div class="ri" onclick="togR(this)">
+              <div class="ri-bar">
+                <span class="ri-dash">—</span>
+                <span class="ri-nm">佐々羅 透李</span>
+                <span class="ri-role">담당 정신과 상담의</span>
+                <span class="ri-ic">▶</span>
               </div>
-              <div class="rel-desc">
-                지역과 근무 시절의 선배. 활달한 성격에 휘둘리면서도, 직장 내 몇 안 되는 친밀한 상급자. 노리유키의 직장 페르소나를 가장 가까이서 지켜본 인물.
+              <div class="ri-desc">
+                <span class="ri-hon">榊 → 佐々羅 「사사키 선생님」 / 佐々羅 → 榊 「사카키 씨」</span>
+                격주로 진료를 받는 담당의. 자해 흉터를 포함해 가장 깊은 바닥을 유일하게 본 사람이며, 노리유키에게 사사키는 "약점의 증인"에 해당한다. 처음에는 치료 자체를 수치스러워하며 극도로 딱딱하게 대했으나, 시간이 지나면서 사사키 앞에서만큼은 지친 표정을 감추지 않게 되었다. 신뢰하지만, 그 신뢰 자체가 수치심과 불가분의 관계에 있다. "선생님 덕분입니다"라고는 아직 한 번도 말한 적이 없다.
+              </div>
+            </div>
+
+            <div class="ri" onclick="togR(this)">
+              <div class="ri-bar">
+                <span class="ri-dash">—</span>
+                <span class="ri-nm">愛原 歩</span>
+                <span class="ri-role">지역과 시절 선배 — GMPC</span>
+                <span class="ri-ic">▶</span>
+              </div>
+              <div class="ri-desc">
+                <span class="ri-hon">榊 → 愛原 「아이하라 씨」 / 愛原 → 榊 「노리」 또는 「사카키 군」</span>
+                지역과 근무 시절의 선배. 활달하고 사교적인 성격으로, 주민 응대에 능하며 노리유키를 종종 자신의 페이스에 말아넣었다. 노리유키가 끝까지 경어를 고수해도 "그 딱딱한 거 좀 풀어"라며 개의치 않는 타입. 아이하라가 먼저 수사 제1과로 이동한 뒤, 노리유키가 뒤따라 배치되었다. 노리유키의 직장 페르소나를 가장 가까이서 본 인물이기에, 코토리켄 등에서 보이는 그의 미묘하게 다른 면을 발견하면 즉시 알아챌 가능성이 높다.
               </div>
             </div>
 
           </div>
         </div>
 
-        <!-- CONFIDENTIAL -->
-        <div class="section" data-section>
-          <div class="section-header" onclick="toggleSection(this)">
-            <span class="section-title" style="color: #c0392b;">Confidential</span>
-            <span class="section-arrow" style="color: #c0392b;">▼</span>
+        <!-- 08 TRIVIA -->
+        <div class="sc" data-sc>
+          <div class="sc-hd" onclick="tog(this)">
+            <div class="sc-hd-l">
+              <span class="sc-num">08</span>
+              <span class="sc-ttl">Trivia</span>
+            </div>
+            <span class="sc-arr">▼</span>
           </div>
-          <div class="section-content">
-            <div class="text-block" style="color: #555555;">
-              <p style="font-size: 11px; color: #c0392b; letter-spacing: 2px; margin-bottom: 12px;">※ 은닉 핸드아웃 — 열람주의</p>
-              <p>언제부터인가 정신질환에 시달리고 있다. 강박적 침투사고, 만성 우울, 비자살적 자해, 간헐적 자살충동까지 이르렀으나, 2020년 12월 1일 아침에 눈을 떴을 때부터 모든 증상이 거짓말처럼 소실되었다. 원인 불명.</p>
+          <div class="sc-ct">
+            <ul class="tv">
+              <li>코토리켄에서 항상 같은 자리 — 입구에서 가장 먼 구석 — 에 앉는다. 점주 부녀는 이 자리를 비공식적으로 비워두었다.</li>
+              <li>손글씨가 매우 반듯하다. 서류에 한 글자라도 흐트러지면 처음부터 다시 쓴다.</li>
+              <li>핸드폰 배터리가 50% 아래로 떨어지면 불안해하며 충전기를 찾는다. 본인은 이것이 강박의 일상적 발현이라는 자각이 없다.</li>
+              <li>잠버릇은 거의 없으나, 악몽을 꿀 때 이를 악무는 습관이 있어 어금니에 미세한 마모가 있다.</li>
+              <li>매운 것을 못 먹는다는 사실이 들키면 묘하게 무안해한다.</li>
+              <li>헤비하라와 함께 있을 때 무의식적으로 보호자 포지션을 취하나, 헤비하라가 진심으로 칭찬하면 반응을 못 하고 시선을 돌린다.</li>
+              <li>유도 수련의 습관이 남아 있어, 잡히거나 밀칠 때 반사적으로 상대의 중심을 잡으려 한다.</li>
+              <li>자해 흔적은 제복과 일상복으로 완전히 가려지는 부위에 한정되어 있다. 佐々羅 외에 이 사실을 아는 사람은 없다.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 09 CONFIDENTIAL -->
+        <div class="sc" data-sc>
+          <div class="sc-hd" onclick="tog(this)">
+            <div class="sc-hd-l">
+              <span class="sc-num">09</span>
+              <span class="sc-ttl" style="color:#b82020;">Confidential</span>
+            </div>
+            <span class="sc-arr" style="color:#b82020;">▼</span>
+          </div>
+          <div class="sc-ct">
+            <div class="cf-bar"></div>
+            <div class="cf-warn">※ 은닉 핸드아웃 — 열람 주의</div>
+            <div class="tb" style="color:#444;">
+              <p>오래전부터 정신질환에 시달리고 있다. 직업과 맞물려 현실 판단과의 경계가 흐려지기 쉬운 강박적 침투사고를 근저에 두고, 만성 우울장애와 비자살적 자해, 간헐적 자살충동까지 이르렀다. 자해는 제복으로 가려지는 부위에 한정했으며, 정기적으로 사카키 토오리의 격주 진료를 받아왔다. 이 사실을 아는 것은 사카키뿐이다.</p>
+              <p>2020년 12월 1일 아침, 눈을 떴을 때부터 강박사고, 우울감, 자해 충동, 자살사고를 포함한 모든 증상이 소실되어 있었다. 머릿속이 처음으로 조용했다. 원인 불명. 안도보다는 불안이, 감사보다는 공포가 먼저 왔다. "이유 없이 나았다"는 사실 자체가 새로운 의문.</p>
             </div>
           </div>
         </div>
 
       </div>
 
-      <div class="footer-note">PURGATORIUM — HO2 INVESTIGATOR FILE</div>
+      <!-- footer -->
+      <div class="ft">
+        <span class="ft-l">PURGATORIUM — HO2 INVESTIGATOR FILE</span>
+        <span class="ft-r">CONFIDENTIAL</span>
+      </div>
 
     </div>
   </div>
 
+  <!-- ======== SCRIPT ======== -->
   <script>
-    /* ============================
-       ① CLASSIFIED COVER
-    ============================ */
-
-    function openFile() {
-      const cover = document.getElementById('cover');
-      const page = document.getElementById('profilePage');
-
-      cover.classList.add('dismissed');
-
+    /* COVER — stamp slam */
+    window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
-        document.body.style.overflow = 'auto';
-        page.classList.add('visible');
-        animateVisibleBars();
-      }, 600);
+        const s = document.getElementById('stamp');
+        const c = document.getElementById('cover');
+        s.classList.add('slam');
+        setTimeout(() => {
+          c.classList.add('shaking');
+          setTimeout(() => {
+            c.classList.remove('shaking');
+            document.getElementById('hint').classList.add('show');
+          }, 400);
+        }, 250);
+      }, 800);
+    });
+
+    /* COVER — open */
+    function openFile() {
+      const c = document.getElementById('cover');
+      const p = document.getElementById('page');
+      if (!c.classList.contains('out')) {
+        c.classList.add('out');
+        setTimeout(() => {
+          document.body.style.overflow = 'auto';
+          p.classList.add('vis');
+          aBars();
+        }, 500);
+      }
     }
 
-    /* ============================
-       ② ACCORDION SECTIONS
-    ============================ */
-
-    function toggleSection(header) {
-      const section = header.parentElement;
-      const wasOpen = section.classList.contains('open');
-
-      section.classList.toggle('open');
-
-      // ③ 특성치 섹션이 열릴 때 바 애니메이션
-      if (!wasOpen) {
-        const bars = section.querySelectorAll('.stat-bar-fill');
-        if (bars.length > 0) {
-          bars.forEach(bar => { bar.style.width = '0%'; });
+    /* ACCORDION */
+    function tog(hd) {
+      const sc = hd.parentElement;
+      const wasOn = sc.classList.contains('on');
+      sc.classList.toggle('on');
+      if (!wasOn) {
+        const bars = sc.querySelectorAll('.sf');
+        if (bars.length) {
+          bars.forEach(b => { b.style.width = '0%'; });
           setTimeout(() => {
-            bars.forEach(bar => {
-              const target = bar.getAttribute('data-target');
-              bar.style.width = target + '%';
-            });
-          }, 100);
+            bars.forEach(b => { b.style.width = b.dataset.t + '%'; });
+          }, 80);
         }
       }
     }
 
-    /* ============================
-       RELATIONSHIP EXPAND
-    ============================ */
+    /* RELATION expand */
+    function togR(el) { el.classList.toggle('on'); }
 
-    function toggleRel(item) {
-      item.classList.toggle('open');
-    }
-
-    /* ============================
-       ③ STAT BAR ANIMATION
-       — 페이지 첫 로드 시 열려있는 섹션용
-    ============================ */
-
-    function animateVisibleBars() {
-      document.querySelectorAll('.section.open .stat-bar-fill').forEach(bar => {
-        const target = bar.getAttribute('data-target');
-        setTimeout(() => {
-          bar.style.width = target + '%';
-        }, 300);
+    /* STAT BARS — first open */
+    function aBars() {
+      document.querySelectorAll('.sc.on .sf').forEach(b => {
+        setTimeout(() => { b.style.width = b.dataset.t + '%'; }, 250);
       });
     }
   </script>
